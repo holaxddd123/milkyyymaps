@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de la Vía Láctea con Leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center; /* Centrar horizontalmente */
+            align-items: center; /* Centrar verticalmente */
+            height: 100vh; /* Altura del body para que ocupe toda la pantalla */
+        }
+        #map {
+            height: 500px; /* Altura del mapa */
+            width: 500px; /* Ancho del mapa */
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Definir los límites de la imagen
+        var imageBounds = [[-90, -180], [90, 180]]; // Límites de la imagen
+
+        // Crear el mapa
+        var map = L.map('map', {
+            center: [0, 0], // Centrado en el espacio
+            zoom: 2, // Nivel de zoom
+            maxZoom: 3, // Zoom máximo
+            minZoom: 1, // Zoom mínimo
+            doubleClickZoom: false, // Deshabilitar zoom con doble clic
+            zoomControl: false, // Ocultar control de zoom
+            maxBounds: imageBounds, // Fijar los límites del mapa
+            maxBoundsViscosity: 1.0, // Mantener el mapa "pegajoso" dentro de los límites
+            dragging: true // Permitir arrastrar el mapa
+        });
+
+        // Cargar la imagen de la Vía Láctea
+        var imageUrl = 'Brazo centauro.jpeg'; // Reemplaza con la URL de tu imagen
+
+        // Agregar la imagen como capa al mapa
+        L.imageOverlay(imageUrl, imageBounds).addTo(map);
+
+        // Ajustar el mapa a los límites de la imagen
+        map.fitBounds(imageBounds);
+
+        var locations = [
+            { coords: [-47.27, -12.13], url: 'OGLE-2012-BLG-0358L b.html', label: 'OGLE-2012-BLG-0358L b' },
+            { coords: [-31.23, -5.77], url: 'OGLE-2018-BLG-0799L b.html', label: 'OGLE-2018-BLG-0799L b' },
+            { coords: [-39.93, -9.39], url: 'KMT-2018-BLG-1292L b.html', label: 'KMT-2018-BLG-1292L b' },
+            { coords: [-35.69, -11.46], url: 'MOA-2010-BLG-117L b.html', label: 'MOA-2010-BLG-117L b' },
+            { coords: [-31.69, -8.46], url: 'MOA-2009-BLG-266L b.html', label: 'MOA-2009-BLG-266L b' },
+        ];
+
+        locations.forEach(function(location) {
+            var marker = L.marker(location.coords).addTo(map);
+            marker.bindPopup(`<button onclick="window.location.href='${location.url}';">${location.label}</button>`);
+        });
+
+        // Deshabilitar zoom táctil y de teclado
+        map.touchZoom.disable();
+        map.boxZoom.disable();
+        map.keyboard.disable();
+    </script>
+</body>
+</html>

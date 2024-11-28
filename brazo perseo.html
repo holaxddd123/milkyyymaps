@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de la Vía Láctea con Leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center; /* Centrar horizontalmente */
+            align-items: center; /* Centrar verticalmente */
+            height: 100vh; /* Altura del body para que ocupe toda la pantalla */
+        }
+        #map {
+            height: 500px; /* Altura del mapa */
+            width: 500px; /* Ancho del mapa */
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Definir los límites de la imagen
+        var imageBounds = [[-90, -180], [90, 180]]; // Límites de la imagen
+
+        // Crear el mapa
+        var map = L.map('map', {
+            center: [0, 0], // Centrado en el espacio
+            zoom: 2, // Nivel de zoom
+            maxZoom: 3, // Zoom máximo
+            minZoom: 1, // Zoom mínimo
+            maxBounds: imageBounds, // Fijar los límites del mapa
+            maxBoundsViscosity: 1.0, // Mantener el mapa "pegajoso" dentro de los límites
+            dragging: true, // Permitir arrastrar el mapa
+            doubleClickZoom: false, // Deshabilitar zoom con doble clic
+            zoomControl: false, // Ocultar control de zoom
+        });
+
+        // Cargar la imagen de la Vía Láctea
+        var imageUrl = 'Brazo Perseo.jpeg'; // Reemplaza con la URL de tu imagen
+
+        // Agregar la imagen como capa al mapa
+        L.imageOverlay(imageUrl, imageBounds).addTo(map);
+
+        // Ajustar el mapa a los límites de la imagen
+        map.fitBounds(imageBounds);
+
+        var locations = [
+            { coords: [-60.93, -19.39], url: 'Proxima centauri b.html', label: 'Proxima centauri' },
+            { coords: [-52.80, -31.45], url: 'WASP-12b.html', label: 'WASP-12 b' },
+            { coords: [-57.42, -3.50], url: 'Kepler 22b.html', label: 'Kepler 22 b' },
+            { coords: [-56.75, -22.48], url: '51 pegasi b.html', label: '51 pegasi b' },
+            { coords: [-60.50, -12.48], url: 'TOI 700 d.html', label: 'TOI 700 d' },
+            { coords: [-56.66, -16.33], url: 'GJ 357 d.html', label: 'GJ 357 d' },
+            { coords: [-55.66, -19.48], url: 'TRAPPIST-1C.html', label: 'TRAPPIST-1C' },
+            { coords: [-55.46, -32.33], url: 'CoRoT-7b.html', label: 'CoRoT-7 b' },
+            { coords: [-59.62, -21.77], url: 'GJ 1132 b.html', label: 'GJ-1132 b' },
+            { coords: [-60.10, -17.30], url: 'Gliese 876 d.html', label: 'Gliese 876 d' },
+            { coords: [-54.37, -11.76], url: 'K2-98 b.html', label: 'K2-98b' },
+        ];
+
+        locations.forEach(function(location) {
+            var marker = L.marker(location.coords).addTo(map);
+            marker.bindPopup(`<button onclick="window.location.href='${location.url}';">${location.label}</button>`);
+        });
+
+        
+    </script>
+</body>
+</html>

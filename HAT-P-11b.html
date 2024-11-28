@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo 3D de Kepler-22b</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #20232a;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        #container {
+            display: flex;
+            width: 80%;
+            height: 80%;
+            background-color: rgba(42, 5, 100, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(124, 71, 71, 0.5);
+            overflow: hidden;
+        }
+        #info {
+            padding: 30px;
+            width: 85%; /* Aumentar el ancho de la sección de información */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto; /* Permitir desplazamiento vertical */
+            max-height: 100%; /* Asegurarse de que el contenedor no se desborde */
+            scrollbar-width: thick; /* Cambiar el grosor de la barra de desplazamiento */
+            scrollbar-color: #fafbfc transparent; /* Color de la barra de desplazamiento */
+        }
+        /* Para navegadores WebKit (Chrome, Safari) */
+        #info::-webkit-scrollbar {
+            width: 12px; /* Ancho de la barra de desplazamiento */
+            margin-left: 10px; /* Mover la barra de desplazamiento más a la derecha */
+        }
+        #info::-webkit-scrollbar-thumb {
+            background-color: #f8fb61; /* Color de la barra de desplazamiento */
+            border-radius: 10px; /* Esquinas redondeadas */
+        }
+        #info::-webkit-scrollbar-track {
+            background: transparent; /* Color de la pista de la barra de desplazamiento */
+        }
+        #canvas-container {
+            width: 0.01%; /* Reducir el ancho del contenedor del lienzo */
+            position: relative;
+            height: 100%; /* Mantener la altura completa */
+        }
+        canvas {
+            display: block;
+            width: 50%;
+            height: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="info">
+            <h1>HAT-P-11b</h1>
+            <p>
+                HAT-P-11b is an exoplanet classified as an "exo-Neptune", meaning it is similar in size to Neptune. It is located about 120 light years away in the constellation Cygnus. This planet has an orbit close to its star, completing one revolution approximately every five days, making it a warm world with a possible gaseous atmosphere and a rocky core.
+
+One of the most interesting features of HAT-P-11b is the detection of water vapor in its atmosphere, discovered through the use of the Hubble, Kepler and Spitzer telescopes. This detection was significant because other planets of similar size had been difficult to study due to clouds blocking the view. At HAT-P-11b, clear skies allowed for clear measurements of the atmosphere, suggesting the presence of water vapor and other gases such as hydrogen. This research is part of an ongoing effort to understand the composition of exo-Neptunes and super-Earths in the Milky Way.
+
+Regarding its location in the galaxy, the exoplanet HAT-P-11b is in the Orion Arm, a region of the Milky Way that is also home to our Solar System.
+
+            </p>
+            <h2>HAT-P-11b</h2>
+ <p>
+    HAT-P-11b es un exoplaneta clasificado como un "exo-Neptuno", lo que significa que tiene un tamaño similar al de Neptuno. Se encuentra a unos 120 años luz de distancia en la constelación del Cisne (Cygnus). Este planeta tiene una órbita cercana a su estrella, completando una vuelta aproximadamente cada cinco días, lo que lo convierte en un mundo cálido con una posible atmósfera gaseosa y un núcleo rocoso.
+
+Una de las características más interesantes de HAT-P-11b es la detección de vapor de agua en su atmósfera, descubierta mediante el uso de los telescopios Hubble, Kepler y Spitzer. Esta detección fue significativa porque otros planetas de tamaño similar habían sido difíciles de estudiar debido a nubes que bloqueaban la vista. En HAT-P-11b, los cielos despejados permitieron obtener mediciones claras de la atmósfera, sugiriendo la presencia de vapor de agua y otros gases como el hidrógeno. Esta investigación es parte de un esfuerzo continuo por entender la composición de exo-Neptunos y supertierras en la Vía Láctea.
+
+En cuanto a su ubicación en la galaxia, el exoplaneta HAT-P-11b está en el Brazo de Orión, una región de la Vía Láctea que también alberga nuestro Sistema Solar​
+        </div>
+        <div id="canvas-container">
+            <canvas id="planetCanvas"></canvas>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Crear la escena, cámara y renderizador
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('planetCanvas'), antialias: true });
+        renderer.setSize(window.innerWidth * 0.55, window.innerHeight * 0.8); // Ajustar el tamaño para ocupar todo el espacio
+        document.body.appendChild(renderer.domElement);
+
+        // Añadir luz
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 5, 5).normalize();
+        scene.add(light);
+
+        // Crear una esfera para representar Kepler-22b
+        const geometry = new THREE.SphereGeometry(2, 64, 64);
+        const material = new THREE.MeshStandardMaterial();
+        const planet = new THREE.Mesh(geometry, material);
+        scene.add(planet);
+        camera.position.z = 5;
+
+        // Cargar textura
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(
+            'https://st4.depositphotos.com/7267242/30313/i/450/depositphotos_303138158-stock-photo-dark-green-matt-suede-fabric.jpg',
+            function (texture) {
+                planet.material.map = texture;
+                planet.material.needsUpdate = true;
+            },
+            undefined,
+            function (error) {
+                console.error('Error al cargar la textura:', error);
+            }
+        );
+
+        // Animación
+        function animate() {
+            requestAnimationFrame(animate);
+            planet.rotation.y += 0.010;
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>

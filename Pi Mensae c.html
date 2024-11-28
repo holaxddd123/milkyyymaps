@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo 3D de Kepler-22b</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #20232a;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        #container {
+            display: flex;
+            width: 80%;
+            height: 80%;
+            background-color: rgba(42, 5, 100, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(124, 71, 71, 0.5);
+            overflow: hidden;
+        }
+        #info {
+            padding: 30px;
+            width: 85%; /* Aumentar el ancho de la sección de información */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto; /* Permitir desplazamiento vertical */
+            max-height: 100%; /* Asegurarse de que el contenedor no se desborde */
+            scrollbar-width: thick; /* Cambiar el grosor de la barra de desplazamiento */
+            scrollbar-color: #fafbfc transparent; /* Color de la barra de desplazamiento */
+        }
+        /* Para navegadores WebKit (Chrome, Safari) */
+        #info::-webkit-scrollbar {
+            width: 12px; /* Ancho de la barra de desplazamiento */
+            margin-left: 10px; /* Mover la barra de desplazamiento más a la derecha */
+        }
+        #info::-webkit-scrollbar-thumb {
+            background-color: #f8fb61; /* Color de la barra de desplazamiento */
+            border-radius: 10px; /* Esquinas redondeadas */
+        }
+        #info::-webkit-scrollbar-track {
+            background: transparent; /* Color de la pista de la barra de desplazamiento */
+        }
+        #canvas-container {
+            width: 0.01%; /* Reducir el ancho del contenedor del lienzo */
+            position: relative;
+            height: 100%; /* Mantener la altura completa */
+        }
+        canvas {
+            display: block;
+            width: 50%;
+            height: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="info">
+            <h1>Pi Mensae c</h1>
+            <p>
+                Pi Mensae c is an intriguing exoplanet with several noteworthy characteristics. Here are the details:
+
+Discovery: Pi Mensae c was discovered in 2012. The planet is part of a multi-planet system orbiting the star Pi Mensae, which is located in the constellation Mensa.
+
+Type: It is classified as a gas giant, similar to Jupiter and Saturn in our solar system. This classification suggests that Pi Mensae c likely has a thick atmosphere composed mainly of hydrogen and helium.
+
+Orbital Characteristics:
+
+Distance from Star: Pi Mensae c orbits its host star at a distance of about 1.54 AU (astronomical units), which is roughly the same distance as Mars is from the Sun.
+Orbital Period: The planet takes approximately 5.7 Earth years to complete one orbit around Pi Mensae.
+Host Star:
+
+Type: Pi Mensae is a G-type main-sequence star, similar to our Sun but slightly more massive.
+Distance: The star is located about 60.5 light-years from Earth.
+Potential for Life: Due to its classification as a gas giant, Pi Mensae c is not considered a candidate for hosting life as we know it. However, the study of gas giants provides valuable insights into the formation and evolution of planetary systems.
+
+Significance: The discovery of Pi Mensae c has contributed to our understanding of exoplanet diversity and the dynamics of multi-planet systems.
+
+
+
+
+            </p>
+            <h2>Pi Mensae c</h2>
+ <p>
+    Pi Mensae c es un exoplaneta intrigante con varias características notables. Aquí están los detalles:
+
+Descubrimiento: Pi Mensae c fue descubierto en 2012. El planeta forma parte de un sistema multiplanetario que orbita alrededor de la estrella Pi Mensae, que se encuentra en la constelación de Mensa.
+
+Tipo: Está clasificado como un gigante gaseoso, similar a Júpiter y Saturno en nuestro sistema solar. Esta clasificación sugiere que Pi Mensae c probablemente tenga una atmósfera espesa compuesta principalmente de hidrógeno y helio.
+
+Características orbitales:
+
+Distancia de la estrella: Pi Mensae c orbita su estrella anfitriona a una distancia de aproximadamente 1,54 AU (unidades astronómicas), que es aproximadamente la misma distancia que la de Marte al Sol.
+Período orbital: el planeta tarda aproximadamente 5,7 años terrestres en completar una órbita alrededor de Pi Mensae.
+Estrella anfitriona:
+
+Tipo: Pi Mensae es una estrella de secuencia principal de tipo G, similar a nuestro Sol pero ligeramente más masiva.
+Distancia: La estrella se encuentra a unos 60,5 años luz de la Tierra.
+Potencial para la vida: Debido a su clasificación como gigante gaseoso, Pi Mensae c no se considera candidato para albergar vida tal como la conocemos. Sin embargo, el estudio de los gigantes gaseosos proporciona información valiosa sobre la formación y evolución de los sistemas planetarios.
+
+Importancia: El descubrimiento de Pi Mensae c ha contribuido a nuestra comprensión de la diversidad de exoplanetas y la dinámica de los sistemas multiplanetarios.
+</p>
+        </div>
+        <div id="canvas-container">
+            <canvas id="planetCanvas"></canvas>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Crear la escena, cámara y renderizador
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('planetCanvas'), antialias: true });
+        renderer.setSize(window.innerWidth * 0.55, window.innerHeight * 0.8); // Ajustar el tamaño para ocupar todo el espacio
+        document.body.appendChild(renderer.domElement);
+
+        // Añadir luz
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 5, 5).normalize();
+        scene.add(light);
+
+        // Crear una esfera para representar Kepler-22b
+        const geometry = new THREE.SphereGeometry(2, 64, 64);
+        const material = new THREE.MeshStandardMaterial();
+        const planet = new THREE.Mesh(geometry, material);
+        scene.add(planet);
+        camera.position.z = 5;
+
+        // Cargar textura
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(
+            'https://png.pngtree.com/thumb_back/fw800/background/20231108/pngtree-background-texture-featuring-plastic-foam-sheet-image_13775838.png',
+            function (texture) {
+                planet.material.map = texture;
+                planet.material.needsUpdate = true;
+            },
+            undefined,
+            function (error) {
+                console.error('Error al cargar la textura:', error);
+            }
+        );
+
+        // Animación
+        function animate() {
+            requestAnimationFrame(animate);
+            planet.rotation.y += 0.010;
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>

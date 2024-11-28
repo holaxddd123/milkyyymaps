@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de la Vía Láctea con Leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            background: url('ruta/a/tu/imagen_de_estrellas.jpg') no-repeat center center fixed; /* Fondo de estrellas */
+            background-size: cover; /* Cubrir todo el fondo */
+            color: white; /* Texto blanco */
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #map {
+            flex: 1; /* Ocupa el espacio restante */
+            width: 100%; /* Ancho del mapa */
+            position: relative;
+        }
+        h1 {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 36px;
+            color: #ffffff; /* Color del título */
+            z-index: 1000; /* Asegura que el título esté por encima del mapa */
+        }
+        .description {
+            background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente */
+            padding: 20px; /* Espaciado interno */
+            margin: 20px; /* Espacio alrededor */
+            border-radius: 8px; /* Bordes redondeados */
+        }
+    </style>
+</head>
+<body>
+    <h1>Milky Maps</h1>
+    <div id="map"></div>
+    <div class="description">
+        <h2>Descripción de la Vía Láctea</h2>
+        <p>
+            La Vía Láctea es una galaxia espiral que contiene nuestro sistema solar. 
+            Con un diámetro de aproximadamente 100,000 años luz y compuesta por cientos de miles de millones de estrellas, 
+            es un vasto y complejo conjunto de materia cósmica. Su forma espiral se caracteriza por brazos que se extienden 
+            desde el núcleo galáctico, donde se encuentra un agujero negro supermasivo. La Vía Láctea es parte de un 
+            grupo local de galaxias y está en constante movimiento en el universo.
+        </p>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Crear el mapa
+        var map = L.map('map', {
+            center: [0, 0], // Centrado en el espacio
+            zoom: 2, // Nivel de zoom
+            maxZoom: 3, // Zoom máximo
+            minZoom: 1 // Zoom mínimo
+        });
+
+        // Agregar una capa negra detrás del mapa
+        var bounds = [[-90, -180], [90, 180]];
+        L.rectangle(bounds, { color: "#000000", weight: 0, fillOpacity: 1, fill: true }).addTo(map);
+
+        // Cargar la imagen de la Vía Láctea
+        var imageUrl = 'Via lactea.jpeg'; // Reemplaza con la URL de tu imagen
+        var imageBounds = [[-90, -180], [90, 180]]; // Límites de la imagen
+
+        // Agregar la imagen como capa al mapa
+        L.imageOverlay(imageUrl, imageBounds).addTo(map);
+
+        // Ajustar el mapa a los límites de la imagen
+        map.fitBounds(imageBounds);
+
+        var locations = [
+            { coords: [0, 0], url: 'Nucleo.html', label: 'Nucleus' },
+            { coords: [34.89, 11.25], url: 'brazo perseo.html', label: 'Perseus arm' },
+            { coords: [-10.49, -60.12], url: 'brazo perseo.html', label: 'Perseus arm' },
+            { coords: [-59, -33.37], url: 'brazo perseo.html', label: 'Perseus arm' },
+            { coords: [8.71, -33.07], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [-52.10, 2.84], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [-45.64, 63.94], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [-8.81, 90.30], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [69.21, 65.22], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [39.91, 87.27], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [-56.37, -17.55], url: 'tierra.html', label: 'Earth' },
+            { coords: [-65, 113.55], url: 'niniki.html', label: 'Norma outer arm' },
+            { coords: [-2.46, -92.79], url: 'niniki2.html', label: 'Norma outer arm' },
+        ];
+
+        locations.forEach(function(location) {
+            var marker = L.marker(location.coords).addTo(map);
+            marker.bindPopup(`<button onclick="window.location.href='${location.url}';">${location.label}</button>`);
+        });
+
+        // Función para obtener coordenadas al hacer clic
+        map.on('click', function(e) {
+            var coord = e.latlng;
+            var lat = coord.lat;
+            var lng = coord.lng;
+            L.popup()
+                .setLatLng([lat, lng])
+                .setContent("Coordenadas: X: " + lng.toFixed(2) + ", Y: " + lat.toFixed(2))
+                .openOn(map);
+        });
+    </script>
+</body>
+</html>
+

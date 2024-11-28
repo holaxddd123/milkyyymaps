@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de la Vía Láctea con Leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center; /* Centrar horizontalmente */
+            align-items: center; /* Centrar verticalmente */
+            height: 100vh; /* Altura del body para que ocupe toda la pantalla */
+        }
+        #map {
+            height: 500px; /* Altura del mapa */
+            width: 500px; /* Ancho del mapa */
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Definir los límites de la imagen (la Vía Láctea en este caso)
+        var imageBounds = [[-90, -180], [90, 180]];
+
+        // Configuraciones originales
+        var initialCenter = [0, 0]; // Centro inicial del mapa
+        var initialZoom = -6; // Nivel de zoom inicial
+
+        // Crear el mapa
+        var map = L.map('map', {
+            center: initialCenter, // Centrado en el espacio
+            zoom: initialZoom, // Nivel de zoom inicial
+            maxZoom: 3, // Zoom máximo
+            minZoom: 1, // Zoom mínimo
+            doubleClickZoom: false, // Deshabilitar zoom con doble clic
+            zoomControl: false, // Ocultar control de zoom
+            maxBounds: imageBounds, // Fijar los límites del mapa
+            maxBoundsViscosity: 1.0 // Mantener el mapa "pegajoso" dentro de los límites
+            
+        });
+
+        // Cargar la imagen de la Vía Láctea
+        var imageUrl = 'Via lactea.jpeg'; // Reemplaza con la URL de tu imagen
+        L.imageOverlay(imageUrl, imageBounds).addTo(map);
+        
+
+        // Ajustar el mapa para que encaje dentro de los límites de la imagen
+        map.fitBounds(imageBounds);
+
+        // Agregar marcadores con popups
+        var locations = [
+            { coords: [0, 0], url: 'Nucleo.html', label: 'Nucleus' },
+            { coords: [34.89, 11.25], url: 'brazo perseo.html', label: 'Perseus arm' },
+            { coords: [-10.49,  -60.12], url: 'brazo perseo.html', label: 'Perseus arm' },
+            { coords: [-59,  -33.37], url: 'brazo perseo.html', label: 'Perseus arm' },
+            { coords: [8.71, -33.07], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [-52.10, 2.84], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [-45.64, 63.94], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [-8.81, 90.30], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [69.21, 65.22], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [39.91, 87.27], url: 'Sagitario.html', label: 'Sagittarius arm' },
+            { coords: [ -56.37, -17.55], url: 'tierra.html', label: 'Earth' },
+            { coords: [ -65, 113.55], url: 'niniki.html', label: 'Norma outer arm' },
+            { coords: [ -2.46, -92.79], url: 'niniki2.html', label: 'Norma outer arm' },
+            { coords: [ 72.41, -16.88], url: 'centauro.html', label: 'Centaur Arm' },
+            { coords: [ 53.41, 52.91], url: 'centauro.html', label: 'Centaur Arm' },
+            { coords: [ 11.95, 65.39], url: 'centauro.html', label: 'Centaur Arm' },
+            { coords: [ -31.95, 18.28], url: 'centauro.html', label: 'Centaur Arm' },
+        ];
+
+        locations.forEach(function(location) {
+            var marker = L.marker(location.coords).addTo(map);
+            marker.bindPopup(`<button onclick="window.location.href='${location.url}';">${location.label}</button>`);
+        });
+
+        // Deshabilitar zoom táctil pero permitir interacción con clics
+        map.touchZoom.disable();
+        map.boxZoom.disable();
+        map.keyboard.disable();
+
+        // Restablecer la vista después de hacer clic en el mapa
+        map.on('click', function() {
+            map.setView(initialCenter, initialZoom); // Restablecer a la vista original
+        });
+
+    </script>
+</body>
+</html>

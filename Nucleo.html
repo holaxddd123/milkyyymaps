@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de la Vía Láctea con Leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* Estilo para centrar el mapa en la página */
+        body {
+            display: flex;
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center; /* Centra verticalmente */
+            height: 100vh; /* Ocupa toda la altura de la ventana */
+            margin: 0; /* Elimina el margen por defecto */
+        }
+        #map {
+            height: 500px; /* Altura del mapa */
+            width: 500px; /* Ancho del mapa */
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Cargar la imagen de la Vía Láctea
+        var imageUrl = 'Nucleo.jpeg'; // Reemplaza con la URL de tu imagen
+        var imageBounds = [[-90, -180], [90, 180]]; // Límites de la imagen
+
+        // Crear el mapa
+        var map = L.map('map', {
+            center: [0, 0], // Centrado en el espacio
+            zoom: 2, // Nivel de zoom
+            maxZoom: 3, // Zoom máximo
+            minZoom: 1, // Zoom mínimo
+            dragging: false, // Deshabilitar arrastre inicialmente
+            doubleClickZoom: false, // Deshabilitar zoom con doble clic
+            zoomControl: false, // Ocultar control de zoom
+            maxBounds: imageBounds, // Fijar los límites del mapa
+            maxBoundsViscosity: 1.0 // Mantener el mapa "pegajoso" dentro de los límites
+        });
+
+        // Agregar la imagen como capa al mapa
+        L.imageOverlay(imageUrl, imageBounds).addTo(map);
+
+        // Ajustar el mapa a los límites de la imagen
+        map.fitBounds(imageBounds);
+
+        var locations = [
+            { coords: [0, 0], url: 'KMT-2021-BLG-1077L c.html', label: 'KMT-2021-BLG-1077L c' },
+            { coords: [-25.96, -7.97], url: 'Kmt-2021.html', label: 'KMT-2021-BLG-0748L b' },
+            { coords: [-13.75, 13.38], url: 'KMT-2022-BLG-0371L b.html', label: 'KMT-2022-BLG-0371L b' },
+            { coords: [-6.32, -7.02], url: 'Moa-2020.html', label: 'MOA-2020-BLG-135L b' },
+            { coords: [8.93, 3.71], url: 'SWEEPS-4 b.html', label: 'SWEEPS-4 b' },
+        ];
+
+        locations.forEach(function(location) {
+            var marker = L.marker(location.coords).addTo(map);
+            marker.bindPopup(`<button onclick="window.location.href='${location.url}';">${location.label}</button>`);
+        });
+
+        // Habilitar arrastre y zoom
+        map.on('zoomend', function() {
+            if (map.getZoom() > 1) {
+                map.dragging.enable(); // Habilitar arrastre al hacer zoom
+            } else {
+                map.dragging.disable(); // Deshabilitar arrastre al estar en zoom mínimo
+            }
+        });
+
+       
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo 3D de Kepler-22b</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #20232a;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        #container {
+            display: flex;
+            width: 80%;
+            height: 80%;
+            background-color: rgba(42, 5, 100, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(124, 71, 71, 0.5);
+            overflow: hidden;
+        }
+        #info {
+            padding: 30px;
+            width: 85%; /* Aumentar el ancho de la sección de información */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto; /* Permitir desplazamiento vertical */
+            max-height: 100%; /* Asegurarse de que el contenedor no se desborde */
+            scrollbar-width: thick; /* Cambiar el grosor de la barra de desplazamiento */
+            scrollbar-color: #fafbfc transparent; /* Color de la barra de desplazamiento */
+        }
+        /* Para navegadores WebKit (Chrome, Safari) */
+        #info::-webkit-scrollbar {
+            width: 12px; /* Ancho de la barra de desplazamiento */
+            margin-left: 10px; /* Mover la barra de desplazamiento más a la derecha */
+        }
+        #info::-webkit-scrollbar-thumb {
+            background-color: #f8fb61; /* Color de la barra de desplazamiento */
+            border-radius: 10px; /* Esquinas redondeadas */
+        }
+        #info::-webkit-scrollbar-track {
+            background: transparent; /* Color de la pista de la barra de desplazamiento */
+        }
+        #canvas-container {
+            width: 0.01%; /* Reducir el ancho del contenedor del lienzo */
+            position: relative;
+            height: 100%; /* Mantener la altura completa */
+        }
+        canvas {
+            display: block;
+            width: 50%;
+            height: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="info">
+            <h1>K2-9b</h1>
+            <p>
+                K2-9b is an exoplanet discovered during the Kepler telescope's K2 mission. It is orbiting an M2.5-type red dwarf, about 110 parsecs (approximately 360 light years) away from Earth. This planet has a radius approximately 2.25 times that of Earth and an orbital period of 18.45 days. Its surface temperature is less than 500 K, which indicates that it is not an extremely hot planet. However, the ultraviolet radiation it receives from its host star is strong enough to affect its atmosphere, reducing the chances of it being habitable.
+                Regarding its location in the Milky Way, K2-9b is located in the Orion Arm or in the vicinity of it, since this is the arm in which a large part of the stars observed during the K2 mission are located.
+            </p>
+            <h2>K2-9b</h2>
+ <p>
+    K2-9b es un exoplaneta descubierto durante la misión K2 del telescopio Kepler. Se encuentra orbitando una enana roja de tipo M2.5, a unos 110 parsecs (aproximadamente 360 años luz) de distancia de la Tierra. Este planeta tiene un radio aproximadamente 2.25 veces mayor que el de la Tierra y un período orbital de 18.45 días. Su temperatura superficial es menor de 500 K, lo que indica que no es un planeta extremadamente caliente. Sin embargo, la radiación ultravioleta que recibe de su estrella anfitriona es lo suficientemente fuerte como para afectar su atmósfera, lo que reduce las probabilidades de que sea habitable
+
+    En cuanto a su ubicación en la Vía Láctea, K2-9b se encuentra en el Brazo de Orión o en las cercanías de este, dado que este es el brazo en el que se localiza gran parte de las estrellas observadas durante la misión K2.
+        </div>
+        <div id="canvas-container">
+            <canvas id="planetCanvas"></canvas>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Crear la escena, cámara y renderizador
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('planetCanvas'), antialias: true });
+        renderer.setSize(window.innerWidth * 0.55, window.innerHeight * 0.8); // Ajustar el tamaño para ocupar todo el espacio
+        document.body.appendChild(renderer.domElement);
+
+        // Añadir luz
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 5, 5).normalize();
+        scene.add(light);
+
+        // Crear una esfera para representar Kepler-22b
+        const geometry = new THREE.SphereGeometry(2, 64, 64);
+        const material = new THREE.MeshStandardMaterial();
+        const planet = new THREE.Mesh(geometry, material);
+        scene.add(planet);
+        camera.position.z = 5;
+
+        // Cargar textura
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(
+            'https://plus.unsplash.com/premium_photo-1719476096371-d595d60e3b09?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dG9ybWVudGElMjBkZSUyMGFyZW5hfGVufDB8fDB8fHww',
+            function (texture) {
+                planet.material.map = texture;
+                planet.material.needsUpdate = true;
+            },
+            undefined,
+            function (error) {
+                console.error('Error al cargar la textura:', error);
+            }
+        );
+
+        // Animación
+        function animate() {
+            requestAnimationFrame(animate);
+            planet.rotation.y += 0.010;
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>

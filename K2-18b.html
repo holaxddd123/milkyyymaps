@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo 3D de Kepler-22b</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #20232a;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        #container {
+            display: flex;
+            width: 80%;
+            height: 80%;
+            background-color: rgba(42, 5, 100, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(124, 71, 71, 0.5);
+            overflow: hidden;
+        }
+        #info {
+            padding: 30px;
+            width: 85%; /* Aumentar el ancho de la sección de información */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto; /* Permitir desplazamiento vertical */
+            max-height: 100%; /* Asegurarse de que el contenedor no se desborde */
+            scrollbar-width: thick; /* Cambiar el grosor de la barra de desplazamiento */
+            scrollbar-color: #fafbfc transparent; /* Color de la barra de desplazamiento */
+        }
+        /* Para navegadores WebKit (Chrome, Safari) */
+        #info::-webkit-scrollbar {
+            width: 12px; /* Ancho de la barra de desplazamiento */
+            margin-left: 10px; /* Mover la barra de desplazamiento más a la derecha */
+        }
+        #info::-webkit-scrollbar-thumb {
+            background-color: #f8fb61; /* Color de la barra de desplazamiento */
+            border-radius: 10px; /* Esquinas redondeadas */
+        }
+        #info::-webkit-scrollbar-track {
+            background: transparent; /* Color de la pista de la barra de desplazamiento */
+        }
+        #canvas-container {
+            width: 0.01%; /* Reducir el ancho del contenedor del lienzo */
+            position: relative;
+            height: 100%; /* Mantener la altura completa */
+        }
+        canvas {
+            display: block;
+            width: 50%;
+            height: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="info">
+            <h1>K2-18b</h1>
+            <p>
+                K2-18b is an exoplanet located about 124 light years from Earth, in the constellation Leo. This planet is a "super-Earth", meaning it is larger than Earth, with a mass approximately 8 times greater. It was discovered in 2015 by the Kepler Space Telescope and is one of the few planets in the habitable zone of its star, where conditions could allow the presence of liquid water.
+
+                An important finding related to K2-18b is the detection of water vapor in its atmosphere, thanks to data from the Hubble Space Telescope. This makes K2-18b one of the first exoplanets in the habitable zone to show signs of water, generating great interest in the possibility that it could support life. However, its environment may be hostile to life as we know it, due to the radiation it receives from its star.
+</p>
+
+            </p>
+            <h2>K2-18b</h2>
+ <p>
+    K2-18b es un exoplaneta ubicado a unos 124 años luz de la Tierra, en la constelación de Leo. Este planeta es una "supertierra", lo que significa que es más grande que la Tierra, con una masa aproximadamente 8 veces mayor. Fue descubierto en 2015 por el Telescopio Espacial Kepler y es uno de los pocos planetas en la zona habitable de su estrella, donde las condiciones podrían permitir la presencia de agua líquida.
+
+    Un hallazgo importante relacionado con K2-18b es la detección de vapor de agua en su atmósfera, gracias a los datos del Telescopio Espacial Hubble. Esto convierte a K2-18b en uno de los primeros exoplanetas en la zona habitable en mostrar signos de agua, lo cual genera gran interés en la posibilidad de que pueda albergar vida. Sin embargo, su entorno puede ser hostil para la vida tal como la conocemos, debido a la radiación que recibe de su estrella
+</p>
+        </div>
+        <div id="canvas-container">
+            <canvas id="planetCanvas"></canvas>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Crear la escena, cámara y renderizador
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('planetCanvas'), antialias: true });
+        renderer.setSize(window.innerWidth * 0.55, window.innerHeight * 0.8); // Ajustar el tamaño para ocupar todo el espacio
+        document.body.appendChild(renderer.domElement);
+
+        // Añadir luz
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 5, 5).normalize();
+        scene.add(light);
+
+        // Crear una esfera para representar Kepler-22b
+        const geometry = new THREE.SphereGeometry(2, 64, 64);
+        const material = new THREE.MeshStandardMaterial();
+        const planet = new THREE.Mesh(geometry, material);
+        scene.add(planet);
+        camera.position.z = 5;
+
+        // Cargar textura
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPAdzOy1GBQkPGFKkrt5aZmrkiQthvdvNltg&s',
+            function (texture) {
+                planet.material.map = texture;
+                planet.material.needsUpdate = true;
+            },
+            undefined,
+            function (error) {
+                console.error('Error al cargar la textura:', error);
+            }
+        );
+
+        // Animación
+        function animate() {
+            requestAnimationFrame(animate);
+            planet.rotation.y += 0.010;
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo 3D de Kepler-22b</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #20232a;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        #container {
+            display: flex;
+            width: 80%;
+            height: 80%;
+            background-color: rgba(42, 5, 100, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(124, 71, 71, 0.5);
+            overflow: hidden;
+        }
+        #info {
+            padding: 30px;
+            width: 85%; /* Aumentar el ancho de la sección de información */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto; /* Permitir desplazamiento vertical */
+            max-height: 100%; /* Asegurarse de que el contenedor no se desborde */
+            scrollbar-width: thick; /* Cambiar el grosor de la barra de desplazamiento */
+            scrollbar-color: #fafbfc transparent; /* Color de la barra de desplazamiento */
+        }
+        /* Para navegadores WebKit (Chrome, Safari) */
+        #info::-webkit-scrollbar {
+            width: 12px; /* Ancho de la barra de desplazamiento */
+            margin-left: 10px; /* Mover la barra de desplazamiento más a la derecha */
+        }
+        #info::-webkit-scrollbar-thumb {
+            background-color: #f8fb61; /* Color de la barra de desplazamiento */
+            border-radius: 10px; /* Esquinas redondeadas */
+        }
+        #info::-webkit-scrollbar-track {
+            background: transparent; /* Color de la pista de la barra de desplazamiento */
+        }
+        #canvas-container {
+            width: 0.01%; /* Reducir el ancho del contenedor del lienzo */
+            position: relative;
+            height: 100%; /* Mantener la altura completa */
+        }
+        canvas {
+            display: block;
+            width: 50%;
+            height: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="info">
+            <h1>CoRoT-7b</h1>
+            <p>
+                CoRoT-7b is a significant exoplanet known for being one of the first rocky exoplanets discovered. Here are some detailed characteristics:
+
+Discovery: CoRoT-7b was discovered by the CoRoT (Convection, Rotation and Planetary Transits) space telescope in 2009. It was among the first exoplanets confirmed to have a solid surface.
+
+Location: It is located approximately 490 light-years away from Earth in the constellation Monoceros.
+
+Type: CoRoT-7b is classified as a "super-Earth" due to its size, which is about 1.68 times that of Earth. This classification indicates that it is larger than Earth but smaller than Neptune.
+
+Orbital Period: The planet has a very short orbital period, completing an orbit around its host star, CoRoT-7, in just 0.85 days (approximately 20.4 hours). This proximity results in extremely high temperatures on its surface.
+
+Temperature: Due to its close orbit to its host star, the surface temperatures of CoRoT-7b are believed to be extremely high, potentially exceeding 1,000 degrees Celsius (1,832 degrees Fahrenheit). This raises questions about the planet's atmosphere and whether it can support any form of life.
+
+Atmospheric Conditions: Observations suggest that CoRoT-7b may have lost its atmosphere due to intense stellar radiation, which is common for planets in such close orbits to their stars.
+
+Significance: The discovery of CoRoT-7b has implications for understanding rocky exoplanets and the conditions under which they can form and evolve.
+
+
+            </p>
+            <h2>CoRoT-7b</h2>
+ <p>
+    CoRoT-7b es un exoplaneta importante conocido por ser uno de los primeros exoplanetas rocosos descubiertos. A continuación se detallan algunas características detalladas:
+
+    Descubrimiento: CoRoT-7b fue descubierto por el telescopio espacial CoRoT (Convección, Rotación y Tránsitos Planetarios) en 2009. Fue uno de los primeros exoplanetas que se confirmó que tenían una superficie sólida.
+    
+    Ubicación: Se encuentra aproximadamente a 490 años luz de la Tierra en la constelación de Monoceros.
+    
+    Tipo: CoRoT-7b está clasificado como una "supertierra" debido a su tamaño, que es aproximadamente 1,68 veces mayor que el de la Tierra. Esta clasificación indica que es más grande que la Tierra pero más pequeño que Neptuno.
+    
+    Período orbital: el planeta tiene un período orbital muy corto, completando una órbita alrededor de su estrella anfitriona, CoRoT-7, en sólo 0,85 días (aproximadamente 20,4 horas). Esta proximidad provoca temperaturas extremadamente altas en su superficie.
+    
+    Temperatura: Debido a su órbita cercana a su estrella anfitriona, se cree que las temperaturas de la superficie de CoRoT-7b son extremadamente altas, potencialmente superando los 1.000 grados Celsius (1.832 grados Fahrenheit). Esto plantea dudas sobre la atmósfera del planeta y si puede sustentar alguna forma de vida.
+    
+    Condiciones atmosféricas: Las observaciones sugieren que CoRoT-7b puede haber perdido su atmósfera debido a la intensa radiación estelar, que es común en los planetas en órbitas tan cercanas a sus estrellas.
+    
+    Importancia: El descubrimiento de CoRoT-7b tiene implicaciones para comprender los exoplanetas rocosos y las condiciones bajo las cuales pueden formarse y evolucionar.
+</p>
+        </div>
+        <div id="canvas-container">
+            <canvas id="planetCanvas"></canvas>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Crear la escena, cámara y renderizador
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('planetCanvas'), antialias: true });
+        renderer.setSize(window.innerWidth * 0.55, window.innerHeight * 0.8); // Ajustar el tamaño para ocupar todo el espacio
+        document.body.appendChild(renderer.domElement);
+
+        // Añadir luz
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 5, 5).normalize();
+        scene.add(light);
+
+        // Crear una esfera para representar Kepler-22b
+        const geometry = new THREE.SphereGeometry(2, 64, 64);
+        const material = new THREE.MeshStandardMaterial();
+        const planet = new THREE.Mesh(geometry, material);
+        scene.add(planet);
+        camera.position.z = 5;
+
+        // Cargar textura
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHdGxTN_mqLCVMzlhBrWDmdMVl5z0xVnUcgw&s',
+            function (texture) {
+                planet.material.map = texture;
+                planet.material.needsUpdate = true;
+            },
+            undefined,
+            function (error) {
+                console.error('Error al cargar la textura:', error);
+            }
+        );
+
+        // Animación
+        function animate() {
+            requestAnimationFrame(animate);
+            planet.rotation.y += 0.010;
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>

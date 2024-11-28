@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+ <html lang="es">
+ <head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width,
+ initial-scale=1.0">
+ <title>Modelo 3D de Kepler-22b</title>
+ <style>
+ body {
+ margin: 0;
+ font-family: Arial, sans-serif;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ height: 100vh;
+ background-color: #20232a;
+ color: #ffffff;
+ overflow: hidden;
+ }
+ #container {
+ display: flex;
+ width: 80%;
+ height: 80%;
+ background-color: rgba(42, 5, 100, 0.9);
+ border-radius: 10px;
+ box-shadow: 0 4px 10px rgba(124, 71, 71, 0.5);
+ overflow: hidden;
+ }
+ #info {
+ padding: 30px;
+ width: 85%; /* Aumentar el ancho de la sección de
+ información */
+ display: flex;
+ flex-direction: column;
+ justify-content: space-between;
+ overflow-y: auto; /* Permitir desplazamiento vertical */
+ max-height: 100%; /* Asegurarse de que el contenedor no se
+ desborde */
+ scrollbar-width: thick; /* Cambiar el grosor de la barra de
+ desplazamiento */
+ scrollbar-color: #fafbfc transparent; /* Color de la barra
+ de desplazamiento */
+ }
+/* Para navegadores WebKit (Chrome, Safari) */
+ #info::-webkit-scrollbar {
+ width: 12px; /* Ancho de la barra de desplazamiento */
+ margin-left: 10px; /* Mover la barra de desplazamiento más
+ a la derecha */
+ }
+ #info::-webkit-scrollbar-thumb {
+ background-color: #f8fb61; /* Color de la barra de
+ desplazamiento */
+ border-radius: 10px; /* Esquinas redondeadas */
+ }
+ #info::-webkit-scrollbar-track {
+ background: transparent; /* Color de la pista de la barra
+ de desplazamiento */
+ }
+ #canvas-container {
+ width: 0.01%; /* Reducir el ancho del contenedor del lienzo
+ */
+ position: relative;
+ height: 100%; /* Mantener la altura completa */
+ }
+ canvas {
+ display: block;
+ width: 50%;
+ height: 50%;
+ }
+ </style>
+ </head>
+ <body>
+ <div id="container">
+ <div id="info">
+ <h1>OGLE-2012-BLG-0358L b</h1>
+ <p> The exoplanet OGLE-2012-BLG-0358L b is a gas giant with a mass of 1.85 times that of Jupiter. It orbits its star at a distance of 0.87 AU and takes 5.7 years to complete one orbit. This exoplanet, located 5,740 light-years away, was discovered in 2013 using the microlensing method. The type of star it orbits remains unknown. 
+ <h2>OGLE-2012-BLG-0358L b</h2>
+ <br> El exoplaneta OGLE-2012-BLG-0358L b es un gigante gaseoso con una masa de 1.85 veces la de Júpiter. Orbita su estrella a una distancia de 0.87 UA y tarda 5.7 años en completar una órbita. Este exoplaneta, ubicado a 5,740 años luz de distancia, fue descubierto en 2013 mediante el método de microlente. El tipo de estrella que orbita sigue siendo desconocido.
+ </p>
+ </div>
+ <div id="canvas-container">
+ <canvas id="planetCanvas"></canvas>
+ </div>
+ </div>
+ <script
+ src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+ ></script>
+ <script>
+ // Crear la escena, cámara y renderizador
+ const scene = new THREE.Scene();
+ const camera = new THREE.PerspectiveCamera(48,
+ window.innerWidth / window.innerHeight, 1, 1000);
+ const renderer = new THREE.WebGLRenderer({ canvas:
+ document.getElementById('planetCanvas'), antialias: true });
+ renderer.setSize(window.innerWidth * 0.55, window.innerHeight *
+ 0.8); // Ajustar el tamaño para ocupar todo el espacio
+ document.body.appendChild(renderer.domElement);
+ // Añadir luz
+ const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 5, 5).normalize();
+ scene.add(light);
+ // Crear una esfera para representar Kepler-22b
+ const geometry = new THREE.SphereGeometry(2, 64, 64);
+ const material = new THREE.MeshStandardMaterial();
+ const planet = new THREE.Mesh(geometry, material);
+ scene.add(planet);
+ camera.position.z = 5;
+ // Cargar textura
+ const textureLoader = new THREE.TextureLoader();
+ textureLoader.load(
+ 'https://media.istockphoto.com/photos/cream-picture-id531903627?k=6&m=531903627&s=612x612&w=0&h=zyGtFU30fEGT705qq1SFYLHzLVyBI7CkR4TGjDFH3qg=',
+ function (texture) {
+ planet.material.map = texture;
+ planet.material.needsUpdate = true;
+ },
+ undefined,
+ function (error) {
+ console.error('Error al cargar la textura:', error);
+ }
+ );
+ // Animación
+ function animate() {
+ requestAnimationFrame(animate);
+ planet.rotation.y += 0.005;
+ renderer.render(scene, camera);
+ }
+ animate();
+ </script>
+ </body>
+ </html
